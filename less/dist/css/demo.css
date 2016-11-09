@@ -1,0 +1,21 @@
+/**
+ * import another less file
+ */
+h3 {
+  background: #4d926f;
+}
+/**
+ * this less file content
+ */
+#header {
+  color: #4d926f;
+}
+h2 {
+  color: #4d926f;
+}
+p {
+  color: #4d926f;
+}
+ul {
+  font-size: 14px;
+}
