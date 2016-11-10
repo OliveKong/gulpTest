@@ -1,0 +1,280 @@
+/*many value variable map type*/
+$headings:(h1:2em , h2:1.5em , h3:1.2em);
+@each $header,$size,$hcolor in $headings{ //$header for key;$size for value
+	#{$header}{
+		font-size:$size;
+		color:$hcolor;
+	}
+}
+/*global variable*/
+$fontsize: 14px;
+$color:green;
+body{
+	$fontsize:14px;
+	font-size:$fontsize;
+	$color:#333 !global;
+	color:$color;
+}
+p{
+	font-size:$fontsize;
+	color:$color;
+}
+/*nesting*/
+#topNav{
+	line-height:40px;
+	color:blue;
+	background:#f0f0f0;
+	li{
+		// float:left;
+		padding:0 20px;
+	}
+	a{
+		display:block;
+		color:tan;
+		&:hover{
+			color:purple;
+		}
+	}
+}
+.fakeshadow{
+	border:{
+		style:solid;
+		left:{
+			width:4px;
+			color:green;
+		}
+		right:{
+			width:4px;
+			color:grey;
+		}
+	}
+}
+/*@root*/
+/*no jump out*/
+.parent1{
+	color:#f00;
+	.child{
+		width:100px;
+		background:#f0f0f0;
+	}
+}
+/* single selector jump out*/
+.parent2{
+	color:peru;
+	@at-root .child{
+		width:200px;
+		background:tan;
+	}
+}
+/*many selectors jump out*/
+.parent3{
+	background:#eee;
+	.child3,.child4{
+		width:400px;
+		background:yellowgreen;
+	}
+	@at-root {
+		.child1{
+			width:300px;
+			background:seagreen;
+		}
+		.child2{
+			width:400px;
+			background:skyblue;
+		}
+	}
+}
+/*jump out media not jump out parent*/
+@media(max-width:1000px) {
+	.parent3{
+		background:#666;
+		color:#fff;
+		@at-root(without:media){
+			.child4{
+				width:500px;
+				background:steelblue;
+			}
+		}
+	}
+}
+/*jump out media and jump out parent*/
+@media (max-width:800px) {
+	.parent3{
+		background:tomato;
+		color:#fff;
+		@at-root(without:all){
+			.child4{
+				width:600px;
+				background:seagreen;
+			}
+		}
+	}
+}
+/*@at-root and & uesed together*/
+.child4-1{
+	width:300px;
+	background:aquamarine;
+	@at-root .parent4 &{
+		width:400px;
+		background:palegreen;
+	}
+}
+.demo1{
+	width:100px;
+	height:100px;
+	background:palevioletred;
+	animation:motion 3s infinite alternate;
+	@at-root{
+		@keyframes motion{
+			form{margin-left:0;}
+			to{	margin-left:200px;}
+		}
+	}
+}
+/*mixin*/
+@mixin center-block{
+	margin:0 auto;
+	width:200px;
+	height:100px;
+	background:palegreen;
+}
+.mixinDemo{
+	@include center-block;
+}
+@mixin opacity($opacity:50) {
+	opacity:$opacity / 100;
+	filter:alpha(opacity=$opacity);
+}
+.opacity{
+	@include opacity;//parameter use default value
+}
+.opacity-80{
+	@include opacity(80);//transmit parameter
+}
+/*many parameter mixin*/
+@mixin horizontal-line($border:1px solid #333,$padding:10px){
+	border-bottom:$border;
+	padding-top:$padding;
+	padding-bottom:$padding;
+}
+.imgtext-h li{
+	@include horizontal-line(1px solid #333);
+}
+.imgtext-h--product li{
+	@include horizontal-line($padding:15px);
+}
+/*many group of parameter mixin */
+@mixin box-shadow($shadow...) {
+	box-shadow:$shadow;
+	-webkit-box-shadow:$shadow;
+}
+.box{
+	border:1px solid #ccc;
+	@include box-shadow(0 2px 2px rgba(0,255,0,1),0 4px 4px rgba(255,0,0,1),0 6px 6px rgba(0,0,255,1));
+}
+/*@content*/
+@mixin max-screen($res) {
+	@media only screen and (max-width:$res){
+		@content;
+	}
+}
+@include max-screen(680px) {
+	body{
+		background:papayawhip;
+	}
+}
+/*@extend*/
+.extend{
+	color:black;
+	background:palegreen;
+	border:2px solid purple;
+}
+.extendH1{
+	@extend .extend;
+	width:400px;
+	height:50px;
+	line-height:50px;
+}
+%ir{
+	height:30px;
+	line-height:30px;
+	color:violet;
+	background:seashell;
+}
+%ir2{
+	color:tomato;
+}
+#content{
+	 h6{
+		@extend %ir;
+		width:300px;
+	}
+}
+/*@function*/
+$baseFontSize:10px;
+@function pxToRem($px) {
+	@return $px / $baseFontSize * 1rem;
+}
+.function,.function2{
+	font-size:pxToRem(40px);
+	// color:lighten($color, 10%);
+	// color:lighten(nth($linkColor,1), 10%);
+}
+.function2{
+	// color:darken(nth($linkColor,1), 20%);
+}
+/*@if*/
+$lte7: true;
+$type: monster;
+.ib{
+	display:inline-block;
+	@if $lte7 {
+		*display:inline;
+		*zoom:1;
+	}
+	padding:if(true, 10px, 20px);
+	margin:if(false, 10px, 20px)
+}
+.bgColor{
+	@if $type ==ocean{
+		color:blue;
+	} @else if $type == matador{
+		color:red;
+	} @else if $type == monster{
+		color:green;
+	} @else{
+		color:black;
+	}
+}
+/*@for*/
+@for $i from 1 through 3{
+	.item-#{$i} { width:8em * $i; background:tan;}
+}
+@for $i from 11 to 13{
+	.item-#{$i} { width:8em * ($i - 10); background:plum;}
+}
+/*@each list*/
+$colorList: navy,aquamarine,violet,lavender;
+@each $wordColor in $colorList{
+	.#{$wordColor} {
+		color:$wordColor;
+		background:#666;
+	}
+}
+/*@each many list*/
+$color-data:(navy,black,default),(aquamarine,blue,pointer),(violet,purple,move);
+@each $colorli, $borderli, $cursorli in $color-data {
+	.#{$colorli}Color {
+		color:$colorli;
+		border:2px solid $borderli;
+		cursor:$cursorli;
+		background:#666;
+	}
+}
+/*@each map*/
+$dl: (dt:2em,dd:3em);
+@each $tag, $size in $dl{
+	#{$tag}{
+		font-size:$size;
+	}
+}
