@@ -9,3 +9,5 @@
 4. 配置package
 
 5. 添加gulpfile.js
+
+6.配置成功之后，在命令行gulp css 就可是压缩了
